@@ -9,9 +9,7 @@ Example script for the Pandora Small Sat team to upload planned schedules to ACR
 
 ## Installation
 
-Choose one of the two supported environment setups below.
-
-### Option A: `.venv` (Python 3.12)
+Use a local virtual environment with Python 3.12:
 
 ```bash
 git clone https://github.com/<your-org>/pandora-across-client-example.git
@@ -21,28 +19,6 @@ python3.12 -m venv .venv
 source .venv/bin/activate
 
 pip install --upgrade pip
-pip install -r requirements.txt
-
-# optional: install the package itself (enables the pandora-across-ingest command)
-pip install -e .
-
-# optional: include Jupyter notebook support
-pip install -e ".[notebook]"
-```
-
-### Option B: Conda (Python 3.12)
-
-```bash
-git clone https://github.com/<your-org>/pandora-across-client-example.git
-cd pandora-across-client-example
-
-conda create -n across-dev python=3.12 -y
-conda activate across-dev
-
-pip install --upgrade pip
-pip install -r requirements.txt
-
-# optional: install the package itself (enables the pandora-across-ingest command)
 pip install -e .
 
 # optional: include Jupyter notebook support

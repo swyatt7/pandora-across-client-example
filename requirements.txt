@@ -1,6 +1,0 @@
-across-client
-
-# Jupyter notebook support
-jupyter
-ipykernel
-ipywidgets
