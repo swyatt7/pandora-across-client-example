@@ -22,6 +22,12 @@ source .venv/bin/activate
 
 pip install --upgrade pip
 pip install -r requirements.txt
+
+# optional: install the package itself (enables the pandora-across-ingest command)
+pip install -e .
+
+# optional: include Jupyter notebook support
+pip install -e ".[notebook]"
 ```
 
 ### Option B: Conda (Python 3.12)
@@ -35,6 +41,12 @@ conda activate across-dev
 
 pip install --upgrade pip
 pip install -r requirements.txt
+
+# optional: install the package itself (enables the pandora-across-ingest command)
+pip install -e .
+
+# optional: include Jupyter notebook support
+pip install -e ".[notebook]"
 ```
 
 ## Example Usage (main)
