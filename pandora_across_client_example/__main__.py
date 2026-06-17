@@ -2,7 +2,10 @@ import argparse
 from pathlib import Path
 
 from across.client import Client
-from ingest import ingest  # type: ignore
+try:
+    from .ingest import ingest  # type: ignore
+except ImportError:
+    from ingest import ingest  # type: ignore
 
 
 def main() -> None:

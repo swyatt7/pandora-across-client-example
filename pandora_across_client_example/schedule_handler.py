@@ -1,6 +1,9 @@
 import across.sdk.v1 as sdk
 from across.client import Client
-from footprint_util import project_footprint
+try:
+    from .footprint_util import project_footprint
+except ImportError:
+    from footprint_util import project_footprint  # type: ignore
 
 class PandoraACROSSScheduleHandler:
     def __init__(

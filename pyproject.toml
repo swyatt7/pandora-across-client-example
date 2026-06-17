@@ -1,0 +1,19 @@
+[build-system]
+requires = ["setuptools>=70", "wheel"]
+build-backend = "setuptools.backends.legacy:build"
+
+[project]
+name = "pandora-across-client-example"
+version = "0.1.0"
+description = "Example script for the Pandora Small Sat team to upload planned schedules to ACROSS."
+requires-python = ">=3.12"
+dependencies = [
+    "across-client",
+]
+
+[project.scripts]
+pandora-across-ingest = "pandora_across_client_example.__main__:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["pandora_across_client_example*"]

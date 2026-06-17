@@ -1,6 +1,9 @@
 from __future__ import annotations
 
-from schedule_handler import PandoraACROSSScheduleHandler
+try:
+    from .schedule_handler import PandoraACROSSScheduleHandler
+except ImportError:
+    from schedule_handler import PandoraACROSSScheduleHandler  # type: ignore
 
 from datetime import datetime
 from xml.etree import ElementTree as ET
