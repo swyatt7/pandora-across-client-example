@@ -13,28 +13,18 @@ import across.sdk.v1 as sdk
 
 
 def extract_observations(xml_file: str) -> list[dict]:
-    """
-    Extract observation information from a Pandora ScienceCalendar XML file.
+    """Extract observation records from a Pandora ScienceCalendar XML file.
 
-    Parameters
-    ----------
-    xml_file : str
-        Path to the XML file.
+    The parser reads visit and sequence blocks, then converts spacecraft
+    pointing and timing values into Python types for ACROSS ingestion.
 
-    Returns
-    -------
-    list[dict]
-        List of observation dictionaries containing:
+    Args:
+        xml_file: Path to the XML schedule file.
 
-        - visit_id
-        - sequence_id
-        - target
-        - ra
-        - dec
-        - roll
-        - start
-        - end
-        - duration_seconds
+    Returns:
+        A list of dictionaries. Each dictionary contains visit and sequence
+        identifiers, sky coordinates, roll angle, start and end datetimes,
+        and exposure duration in seconds.
     """
     tree = ET.parse(xml_file)
     root = tree.getroot()
@@ -86,34 +76,50 @@ def extract_observations(xml_file: str) -> list[dict]:
 
 
 def load_xml(xml_path: Path) -> str:
-	"""Load and return XML file contents."""
-	if not xml_path.exists():
-		raise FileNotFoundError(f"XML file not found: {xml_path}")
+    """Read an XML file and return its raw text.
 
-	return xml_path.read_text(encoding="utf-8")
+    Args:
+        xml_path: Filesystem path to the XML document.
+
+    Returns:
+        UTF-8 decoded XML content.
+
+    Raises:
+        FileNotFoundError: If the path does not point to an existing file.
+    """
+    if not xml_path.exists():
+        raise FileNotFoundError(f"XML file not found: {xml_path}")
+
+    return xml_path.read_text(encoding="utf-8")
 
 
 def main() -> None:
+    """Parse a Pandora XML schedule and submit it through the handler.
+
+    This function builds a command-line interface for selecting an XML file,
+    extracts observation parameters, configures ACROSS statuses, and runs the
+    schedule upload workflow.
+    """
     parser = argparse.ArgumentParser(
-		description="Read a PAN-SCICAL-COM XML schedule and send it to the ACROSS schedule handler."
-	)
+        description="Read a PAN-SCICAL-COM XML schedule and send it to the ACROSS schedule handler."
+    )
     parser.add_argument(
-		"xml_path",
-		nargs="?",
-		default=(
-			Path(__file__).resolve().parents[1]
-			/ "data"
-			/ "PAN-SCICAL-COM-20260527-VF-20260601-EX-20260608-R001_jpredits_cleaned00.xml"
-		),
-		type=Path,
-		help="Path to the PAN-SCICAL-COM XML file.",
-	)
+        "xml_path",
+        nargs="?",
+        default=(
+            Path(__file__).resolve().parents[1]
+            / "data"
+            / "PAN-SCICAL-COM-20260527-VF-20260601-EX-20260608-R001_jpredits_cleaned00.xml"
+        ),
+        type=Path,
+        help="Path to the PAN-SCICAL-COM XML file.",
+    )
     args = parser.parse_args()
 
     observations = extract_observations(args.xml_path)
 
 
-	# Placeholder `client`; replace with your real ACROSS client instance when available.
+    # Placeholder `client`; replace with your real ACROSS client instance when available.
     handler = PandoraACROSSScheduleHandler(
         client=Client(),
         observation_status=sdk.ObservationStatus.PLANNED,
@@ -125,4 +131,4 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-	main()
+    main()

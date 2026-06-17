@@ -11,6 +11,15 @@ class PandoraACROSSScheduleHandler:
         schedule_fidelity: sdk.ScheduleFidelity,
         schedule_name: str,
     ):
+        """Initialize ACROSS schedule context for Pandora observations.
+
+        Args:
+            client: Authenticated ACROSS client used for API calls.
+            observation_status: Status assigned to each created observation.
+            schedule_status: Status assigned to the created schedule.
+            schedule_fidelity: Fidelity level describing schedule maturity.
+            schedule_name: Human-readable schedule label used in naming.
+        """
         self.client = client
         self.observation_status = observation_status
         self.schedule_status = schedule_status
@@ -45,6 +54,20 @@ class PandoraACROSSScheduleHandler:
         }
 
     def transform_observations_to_across(self, instrument_config: dict, observations: list[dict]) -> list[sdk.ObservationCreate]:
+        """Transform parsed observation dictionaries into ACROSS models.
+
+        The method maps sky coordinates, timing, and instrument metadata into
+        SDK observation objects, and projects detector footprints onto the sky
+        when footprint geometry is available.
+
+        Args:
+            instrument_config: Instrument-specific ACROSS configuration, with
+                instrument object, bandpass, and observation type.
+            observations: Parsed observation dictionaries from the XML schedule.
+
+        Returns:
+            A list of `sdk.ObservationCreate` objects ready for submission.
+        """
         
         across_observations = []
 
@@ -87,6 +110,18 @@ class PandoraACROSSScheduleHandler:
         return across_observations
     
     def run(self, observations: list[dict]):
+        """Build and submit a Pandora schedule to ACROSS.
+
+        This method creates VISDA and NIRDA observations, computes the full
+        schedule date range, generates a descriptive schedule name, and posts
+        the schedule to the ACROSS API.
+
+        Args:
+            observations: Parsed observation dictionaries from the ingest step.
+
+        Raises:
+            sdk.ApiException: Raised for API failures other than conflict (409).
+        """
 
         visda_observations = self.transform_observations_to_across(self.instrument_config["VISDA"], observations)
         nirda_observations = self.transform_observations_to_across(self.instrument_config["NIRDA"], observations)

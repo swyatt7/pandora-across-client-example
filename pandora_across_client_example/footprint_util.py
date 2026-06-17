@@ -7,23 +7,14 @@ from across.tools.footprint import Footprint
 
 
 def _convert(footprint_points: list[list[Point]]) -> Footprint:
-    """Convert SDK footprint representation into tools Footprint format.
-
-    This function transforms a nested list of SDK `Point` objects into an
-    `across.tools.Footprint` object composed of `Polygon` detectors, where each detector
-    is defined by a list of `Coordinate` objects.
+    """Convert SDK detector points into an ACROSS tools footprint model.
 
     Args:
-        footprint_points (list[list[Point]]):
-            A list of detectors, where each detector is represented as a list
-            of `Point` objects. Each `Point` contains `x` (RA) and `y` (Dec)
-            values.
+        footprint_points: Detector polygons represented as SDK points, where
+            each point stores sky offsets in RA and Dec coordinates.
 
     Returns:
-        Footprint:
-            A `Footprint` object containing a list of `Polygon` detectors with
-            coordinates converted to `Coordinate` objects.
-
+        A `Footprint` object containing polygon detectors in tools format.
     """
     detectors = []
     for detector in footprint_points:
@@ -39,31 +30,16 @@ def _convert(footprint_points: list[list[Point]]) -> Footprint:
 def project_footprint(
     footprint_points: list[list[Point]], ra: float, dec: float, roll_angle: float
 ) -> list[ObservationFootprintCreate]:
-    """Project a footprint onto a sky position and convert to SDK format.
-
-    This function takes an input footprint defined in detector-relative
-    coordinates, projects it onto a sky coordinate with a specified roll
-    angle, and converts the result into a list of
-    `ObservationFootprintCreate` objects for SDK usage.
+    """Project detector footprints to a sky position and roll angle.
 
     Args:
-        footprint_points (list[list[Point]]):
-            A list of detectors, where each detector is a list of `Point`
-            objects representing the footprint geometry in detector space.
-
-        ra (float):
-            Right ascension of the target sky position in degrees.
-
-        dec (float):
-            Declination of the target sky position in degrees.
-
-        roll_angle (float):
-            Roll angle (rotation) to apply during projection, in degrees.
+        footprint_points: Detector polygons in instrument-relative coordinates.
+        ra: Right ascension of the pointing center, in degrees.
+        dec: Declination of the pointing center, in degrees.
+        roll_angle: Field rotation angle applied during projection, in degrees.
 
     Returns:
-        list[ObservationFootprintCreate]:
-            The projected footprint to be associated with the created observation
-
+        A list of `ObservationFootprintCreate` objects in SDK-ready format.
     """
     tools_footprint = _convert(footprint_points)
 
